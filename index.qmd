@@ -1,0 +1,791 @@
+---
+title: "An Introduction to tidymodels"
+author: "Max Kuhn"
+title-slide-attributes:
+  data-background-image: images/hex_wall.png
+  data-background-size: contain
+  data-background-opacity: "0.07"
+---
+
+
+
+```{r startup}
+#| include: false
+#| warning: false
+#| message: false
+options(digits = 3, width = 80)
+
+knitr::opts_chunk$set(
+    comment = "#>",
+    fig.path = "figures/",
+    dev = 'svg',
+    dev.args = list(bg = "transparent")
+  )
+
+library(doMC)
+registerDoMC(cores = parallel::detectCores(logical = TRUE))
+```
+
+## Modeling in R
+
+* R has always had a rich set of modeling tools that it inherited from S. For example, the formula interface has made it simple to specify potentially complex model structures.   
+
+* _R has cutting-edge models_. Many researchers in various domains use R as their primary computing environment and their work often results in R packages.
+
+* _It is easy to port or link to other applications_. R doesn't try to be everything to everyone.
+
+
+## Modeling in R
+However, there is a huge _consistency problem_. For example: 
+
+* There are two primary methods for specifying what terms are in a model. Not all models have both. 
+* 99% of model functions automatically generate dummy variables. 
+* Many package developers don't know much about the language and omit OOP and other core R components.
+
+Two examples follow... 
+
+
+
+
+## Between-Package Inconsistency
+
+The syntax for computing predicted class probabilities:
+
+. . . 
+
+- `MASS` package: `predict(lda_fit)` 
+- `stats` package: `predict(glm_fit, type = "response")` 
+- `mda` package: `type = "posterior"` 
+- `rpart` package: `type = "prob"` 
+- `RWeka` package: `type = "probability"`
+
+and so on.
+
+## Model Interfaces
+
+Which of these packages has both a formula and non-formula interface to the model? 
+
+- `glmnet`
+- `ranger`
+- `rpart`
+- `survival`
+- `xgboost`
+
+## Model Interfaces
+
+Which of these packages has both a formula and non-formula interface to the model? 
+
+::: {.incremental}
+- `glmnet` (matrix only)
+- `ranger` (both but weirdly)
+- `rpart` (formula only)
+- `survival` (formula only)
+- `xgboost` (special sparse matrix only, classes are _zero_-based integers)
+:::
+
+# tidymodels: Our job is to make modeling data with R <span style="color:LightGray;"><strike> less frustrating</strike></span> better.
+
+# _It's actually pretty good_
+
+# "Modeling" includes everything from classical statistical methods to machine learning. 
+
+
+
+## The Tidyverse
+
+
+The [tidyverse](http://www.tidyverse.org/) is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures. 
+
+
+The principles of the tidyverse: 
+
+1. Reuse existing data structures.
+1. Compose simple functions with the pipe.
+1. Embrace functional programming.
+1. Design for humans.
+
+This results in more specific conventions around interfaces, function naming, etc. 
+
+## The Tidyverse
+
+For example, we try to use common prefixes for auto-complete:  `tune_grid()`, `tune_bayes()`, ...
+
+There is also the notion of [tidy data](http://vita.had.co.nz/papers/tidy-data.pdf):
+
+1. Each variable forms a column.
+1. Each observation forms a row.
+1. Each type of observational unit forms a table.
+
+Based on these ideas, we can create modeling packages that have predictable results and are a pleasure to use. 
+
+
+## Tidymodels 
+
+`tidymodels` is a collection of modeling packages that live in the tidyverse and are designed in the same way. 
+
+My goals for tidymodels are:
+
+1. Encourage empirical validation and good methodology.
+
+1. Smooth out diverse interfaces.
+
+1. Build highly reusable infrastructure.
+
+1. Enable a wider variety of methodologies.
+
+## Leveling Up Our Tools
+
+- more categorical econding methods
+  - effect encoding methods
+  - feature hashing
+  - multiple choice predictors
+  
+- modern dimension reduction
+  - UMAP
+  - manifold-based multidimensional scaling
+  
+- additional imputation tools
+
+  
+# 
+
+::: r-fit-text
+[`tidymodels.org`](https://www.tidymodels.org/)
+:::
+
+# 
+
+::: r-fit-text
+_Tidy Modeling with R_ 
+
+([`tmwr.org`](https://www.tmwr.org/))
+:::
+
+# 
+
+::: r-fit-text
+[`workshops.tidymodels.org`](https://workshops.tidymodels.org/)
+:::
+
+
+
+## Selected tidymodels Packages 
+
+
+* [`broom`](https://broom.tidymodels.org/) takes the messy output of built-in functions in R, such as `lm`, `nls`, or `t.test`, and turns them into tidy data frames.
+
+* [`recipes`](https://recipes.tidymodels.org/) is a general data preprocessor with a modern interface. It can create model matrices that incorporate feature engineering, imputation, and other tools.
+
+* [`rsample`](https://rsample.tidymodels.org/) has infrastructure for _resampling_ data so that models can be assessed and empirically validated. 
+
+* [`parsnip`](https://parsnip.tidymodels.org/) gives us a unified modeling interface.
+
+* [`tune`](https://tune.tidymodels.org/) has functions for grid search and sequential optimization of model parameters. 
+
+
+## Loading the Meta-Package
+
+```{r}
+#| label: load-tm
+
+library(tidymodels)
+tidymodels_prefer()
+```
+```{r startup}
+#| label: later-load
+#| include: false
+#| warning: false
+#| message: false
+library(glue)
+library(rules)
+library(rpart)
+library(partykit)
+
+options(digits = 3, width = 80)
+
+knitr::opts_chunk$set(
+    comment = "#>",
+    fig.path = "figures/",
+    dev = 'svg',
+    dev.args = list(bg = "transparent")
+  )
+
+library(doMC)
+registerDoMC(cores = parallel::detectCores(logical = TRUE))
+
+library(ggplot2)
+
+thm <- theme_bw() + 
+  theme(
+    panel.background = element_rect(fill = "transparent", colour = NA), 
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    legend.background = element_rect(fill = "transparent", colour = NA),
+    legend.key = element_rect(fill = "transparent", colour = NA)
+  )
+theme_set(thm)
+
+load("deliveries.RData")
+```
+
+## Example Data
+
+Let's look at some data on delivery times for a restaurant.
+
+(n = `r format(nrow(deliveries), big.mark = ",")`)
+
+We want to predict the `time_to_delivery` based on some basic predictors. 
+
+- `order_time` (double)
+- `order_day` (factor)
+- `distance` (double)
+- `product_01` ... `product_27` (counts)
+
+
+
+## Outcome distribution
+
+```{r}
+#| label: time-hist
+#| out-width: "80%"
+deliveries %>% 
+  ggplot(aes(time_to_delivery)) + 
+  geom_histogram(col = "white") + 
+  geom_rug(alpha = .1)
+```
+
+## Splitting the data
+
+We'll split the data into training (60%), validation (20%), and testing (20%). 
+
+Stratification helps ensure the three outcome distributions are about the same. 
+
+```{r}
+set.seed(991)
+delivery_split <- 
+  initial_validation_split(deliveries, 
+                           prop = c(0.6, 0.2), 
+                           strata = time_to_delivery)
+
+delivery_split
+
+delivery_train <- training(delivery_split)
+delivery_val <- validation(delivery_split)
+
+# To treat it as a single resample:
+delivery_rs <- validation_set(delivery_split)
+```
+
+## A Nonlinear Effect
+
+```{r}
+#| label: time-spline
+#| fig-width: 6
+#| fih-height: 3.4
+#| out-width: "60%"
+delivery_train %>% 
+  ggplot(aes(order_time, time_to_delivery)) + 
+  geom_smooth() +
+  ylim(c(10, 32))
+```
+
+## Actually A Nonlinear Interaction
+
+```{r}
+#| label: time-day-spline
+#| fig-width: 6
+#| fih-height: 3.75
+#| out-width: "70%"
+delivery_train %>% 
+  ggplot(aes(order_time, time_to_delivery, col = order_day)) + 
+  geom_smooth() +
+  ylim(c(10, 32))
+```
+
+
+
+## What are our _features_? 
+
+```{r chicago-recipe-base}
+delivery_rec <- 
+  recipe(time_to_delivery ~ ., data = delivery_train)
+```
+
+<br>
+
+This just initializes the recipe by recording column _roles_ and _types_. 
+
+
+## What are our _features_? 
+
+```{r chicago-recipe-ind}
+#| code-line-numbers: "3"
+delivery_rec <- 
+  recipe(time_to_delivery ~ ., data = delivery_train) %>% 
+  step_dummy(order_day) 
+```
+
+<br>
+
+Each `step_` function takes `dplyr` selectors. 
+
+The default naming is _much_ better (e.g., `order_day_Fri`). 
+
+<br>
+
+There are many steps for to encode categorical predictors. See [_Encoding Categorical Data_](https://www.tmwr.org/categorical) in _Tidy Models with R_. 
+
+
+## What are our _features_? 
+
+```{r chicago-recipe-selector}
+#| code-line-numbers: "3"
+delivery_rec <- 
+  recipe(time_to_delivery ~ ., data = delivery_train) %>% 
+  step_dummy(all_factor_predictors()) 
+```
+
+Other selectors are:
+
+ * `all_nominal()`, `all_numeric()`, and `has_type()`
+ 
+ * `all_predictors()`, `all_outcomes()`, and `has_role()`
+ 
+ * `all_numeric_predictors()` and `all_nominal_predictors()` too
+ 
+ * Standard `dplyr` selectors like `starts_with()` and so on. 
+
+
+
+## What are our _features_? 
+
+```{r chicago-recipe-zv}
+#| code-line-numbers: "4"
+delivery_rec <- 
+  recipe(time_to_delivery ~ ., data = delivery_train) %>% 
+  step_dummy(all_factor_predictors()) %>%
+  step_zv(all_predictors())
+```
+
+Removes any predictor columns with a single unique value (i.e., "zv" = zero-variance). 
+
+There is also a step for _nearly_ zero-variance columns. 
+
+
+## What are our _features_? 
+
+```{r chicago-recipe-spline}
+#| code-line-numbers: "5"
+delivery_rec <- 
+  recipe(time_to_delivery ~ ., data = delivery_train) %>% 
+  step_dummy(all_factor_predictors()) %>%
+  step_zv(all_predictors()) %>% 
+  step_spline_natural(order_time, deg_free = 5)
+```
+
+There are a variety of _basis expansion_ steps. This creates additional columns in the data set. 
+
+Why 5 degrees of freedom? 
+
+## What are our _features_? 
+
+```{r chicago-recipe-spline-tune}
+#| code-line-numbers: "5"
+delivery_rec <- 
+  recipe(time_to_delivery ~ ., data = delivery_train) %>% 
+  step_dummy(all_factor_predictors()) %>%
+  step_zv(all_predictors()) %>% 
+  step_spline_natural(order_time, deg_free = tune())
+```
+
+We can optimize the degrees of freedom using model tuning. 
+
+We'll stick with 5 for now. 
+
+
+## What are our _features_? 
+
+```{r chicago-recipe-interaction}
+#| code-line-numbers: "6"
+delivery_rec <- 
+  recipe(time_to_delivery ~ ., data = delivery_train) %>% 
+  step_dummy(all_factor_predictors()) %>%
+  step_zv(all_predictors()) %>% 
+  step_spline_natural(order_time, deg_free = 5) %>% 
+  step_interact(~ starts_with("order_day"):starts_with("order_time"))
+```
+
+This selects all of the correct indicator values and crosses them with all of the spline model terms. 
+
+
+## What are our _features_? 
+
+```{r chicago-recipe-norm}
+#| code-line-numbers: "7"
+delivery_rec <- 
+  recipe(time_to_delivery ~ ., data = delivery_train) %>% 
+  step_dummy(all_factor_predictors()) %>%
+  step_zv(all_predictors()) %>% 
+  step_spline_natural(order_time, deg_free = 5) %>% 
+  step_interact(~ starts_with("order_day"):starts_with("order_time")) %>% 
+  step_normalize(all_numeric_predictors())
+```
+
+<br>
+
+***Let's fit a linear regression model!***
+
+With `parsnip`, we first create an object that specifies the _type_ of model and then the software _engine_ to do the fit. 
+
+
+
+
+## Linear regression specification 
+
+:::: {.columns}
+
+::: {.column width="40%"}
+```{r parsnip-lm-spec}
+linear_mod <- 
+  linear_reg() 
+
+# Defaults to `lm()`
+```
+:::
+
+::: {.column width="60%"}
+
+This says "Let's fit a model with a numeric outcome, and intercept, and slopes for each predictor."
+
+* Other model types include `nearest_neighbors()`, `decision_tree()`,  `arima_reg()`, and so on.
+
+
+The `set_engine()` function gives the details on _how_ it should be fit. 
+
+:::
+
+::::
+
+
+
+## Let's fit it with... 
+
+:::: {.columns}
+
+::: {.column width="60%"}
+```{r parsnip-lm}
+#| code-line-numbers: "3"
+linear_mod <- 
+  linear_reg() %>% 
+  set_engine("lm")
+
+```
+:::
+
+::: {.column width="40%"}
+```{r parsnip-lm-nope}
+#| echo: false
+#| out-width: 100%
+#| fig-align: "center"
+knitr::include_graphics("images/geordi-nope.png")
+```
+:::
+
+::::
+
+
+## Let's fit it with... 
+
+:::: {.columns}
+
+::: {.column width="60%"}
+```{r parsnip-keras}
+#| code-line-numbers: "3"
+linear_mod <- 
+  linear_reg() %>% 
+  set_engine("keras")
+
+```
+:::
+
+::: {.column width="40%"}
+```{r parsnip-keras-nope}
+#| echo: false
+#| out-width: 100%
+#| fig-align: "center"
+knitr::include_graphics("images/geordi-nope.png")
+```
+:::
+
+::::
+
+## Let's fit it with... 
+
+:::: {.columns}
+
+::: {.column width="60%"}
+```{r parsnip-torch}
+#| code-line-numbers: "3"
+linear_mod <- 
+  linear_reg() %>% 
+  set_engine("brulee")
+
+```
+:::
+
+::: {.column width="40%"}
+```{r parsnip-torch-nope}
+#| echo: false
+#| out-width: 100%
+#| fig-align: "center"
+knitr::include_graphics("images/geordi-nope.png")
+```
+:::
+
+::::
+
+## Let's fit it with... 
+
+:::: {.columns}
+
+::: {.column width="60%"}
+```{r parsnip-spark}
+#| code-line-numbers: "3"
+linear_mod <- 
+  linear_reg() %>% 
+  set_engine("spark")
+
+```
+:::
+
+::: {.column width="40%"}
+```{r parsnip-spark-nope}
+#| echo: false
+#| out-width: 100%
+#| fig-align: "center"
+knitr::include_graphics("images/geordi-nope.png")
+```
+:::
+
+::::
+
+## Let's fit it with...
+
+:::: {.columns}
+
+::: {.column width="60%"}
+```{r parsnip-stan}
+#| code-line-numbers: "3"
+linear_mod <- 
+  linear_reg() %>% 
+  set_engine("stan")
+
+```
+:::
+
+::: {.column width="40%"}
+```{r parsnip-stan-nope}
+#| echo: false
+#| out-width: 100%
+#| fig-align: "center"
+knitr::include_graphics("images/geordi-nope.png")
+```
+:::
+
+::::
+
+
+## Let's fit it with... 
+
+:::: {.columns}
+
+::: {.column width="60%"}
+```{r parsnip-glmnet}
+#| code-line-numbers: "3"
+linear_mod <- 
+  linear_reg() %>% 
+  set_engine("glmnet")
+
+```
+:::
+
+::: {.column width="40%"}
+```{r parsnip-glmnet-yep}
+#| echo: false
+#| out-width: 100%
+#| fig-align: "center"
+knitr::include_graphics("images/geordi-yes.png")
+```
+:::
+
+::::
+
+## Let's fit it with... 
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+```{r parsnip-glmnet-param}
+#| code-line-numbers: "2-3"
+linear_mod <- 
+  linear_reg(penalty = 0.1, 
+             mixture = 0.5) %>% 
+  set_engine("glmnet")
+
+```
+:::
+
+::: {.column width="40%"}
+```{r parsnip-glmnet-param-yep}
+#| echo: false
+#| out-width: 100%
+#| fig-align: "center"
+knitr::include_graphics("images/geordi-yes.png")
+```
+:::
+
+
+::::
+
+
+## A modeling _workflow_ 
+
+We can _optionally_ bundle the recipe and model together into a <span style="color:LightGray;"><strike>pipeline</strike></span> _workflow_:
+
+```{r workflow}
+glmnet_wflow <- 
+  workflow() %>% 
+  add_model(linear_mod) %>% 
+  add_recipe(delivery_rec) # or add_formula() or add_variables()
+```
+
+Fitting and prediction are very easy:
+
+
+```{r workflow-fit}
+glmnet_fit <- fit(glmnet_wflow, data = delivery_train)
+
+# Very east to use compared to glmnet::predict():
+predict(glmnet_fit, delivery_val %>% slice(1:5))
+```
+
+## A Better Interface
+
+`fit_resamples()` uses the out-of-sample data to estimate performance: 
+
+```{r}
+#| label: fit-resamples
+#| warning: false
+#| cache: true
+glmnet_wflow %>% 
+  # We can use our validation set!
+  fit_resamples(resamples = delivery_rs) %>% 
+  collect_metrics()
+```
+
+
+We probably don't have a good idea of what the `penalty` and `mixture` values should be. 
+
+As seen before, we can _mark them for tuning_. 
+
+
+## Let's Try Cubist.
+
+
+It is a _rule-based ensemble_. Rules are paths through a tree. Here are 4 rules: 
+
+```{r}
+#| label: tree-fit
+#| echo: false
+#| out-width: "85%"
+tree_fit <- 
+  rpart(time_to_delivery ~ .,
+        data = delivery_train,
+        control = rpart.control(maxdepth = 2))
+plot(as.party(tree_fit))
+```
+
+It can create many rule sets to form an ensemble. 
+
+
+## Model tuning 
+
+```{r}
+#| label: cubist-spec
+library(rules)
+cubist_mod <- cubist_rules(committees = tune(), neighbors = tune())
+cubist_wflow <- workflow(time_to_delivery ~ ., cubist_mod) 
+```
+
+<br> 
+
+We'll evaluate 25 model candidates using a _space-filling design_ and evaluate them on the validation set: 
+
+```{r}
+#| label: glmnet-tune-res
+#| cache: true
+cubist_res <- 
+  cubist_wflow %>% 
+  tune_grid(resamples = delivery_rs, grid = 25)
+
+show_best(cubist_res, metric = "rmse", n = 3)
+```
+
+## Model tuning 
+
+```{r}
+#| label: glmnet-res
+#| fig-width: 5
+#| fig-height: 3
+#| out-width: "80%"
+
+autoplot(cubist_res, metric = "rmse")
+```
+
+## Next Steps
+
+From here, we would 
+
+ - tune a variety of models and/or recipes
+ - pick a model that we like the most
+ - finalize the model's tuning parameters
+ - fit it to the entire training set
+ - verify the results with the test set
+ 
+The last three steps can be done with a single function called `last_fit()`. 
+
+
+##  Other tools
+
+
+Some other things to do with these data: 
+
+* [model explainers](https://www.tmwr.org/explain.html)
+
+* [model stacking](https://www.tmwr.org/ensembles.html)
+
+* [model deployment using vetiver](https://rstudio.github.io/vetiver-r/)
+
+
+## Development
+
+Recent updates: 
+
+- censored data models (a.k.a survival analysis)
+- case weights
+- conformal inference tools for prediction intervals
+
+In-process:
+
+- model fairness metrics and modeling techniques
+- causal inference methods
+- a general set of post-processing tools
+
+
+## Thanks
+
+Thanks for the invitation to speak today!
+
+The tidymodels team: **Hannah Frick, Emil Hvitfeldt, and Simon Couch**.
+
+Special thanks to the other folks who contributed so much to tidymodels: Davis Vaughan, Edgar Ruiz, Alison Hill, Desirée De Leon, our previous interns, and the tidyverse team.
