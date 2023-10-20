@@ -437,7 +437,7 @@ Max Kuhn
 </section>
 <section id="model-interfaces" class="slide level2">
 <h2>Model Interfaces</h2>
-<p>Which of these packages has both a formula and non-formula interface to the model?</p>
+<p>Which of these packages has both a formula and non-formula (x/y) interface to the model?</p>
 <ul>
 <li><code>glmnet</code></li>
 <li><code>ranger</code></li>
@@ -448,7 +448,7 @@ Max Kuhn
 </section>
 <section id="model-interfaces-1" class="slide level2">
 <h2>Model Interfaces</h2>
-<p>Which of these packages has both a formula and non-formula interface to the model?</p>
+<p>Which of these packages has both a formula and non-formula (x/y) interface to the model?</p>
 <div>
 <ul>
 <li class="fragment"><code>glmnet</code> (matrix only)</li>
@@ -459,6 +459,11 @@ Max Kuhn
 </ul>
 </div>
 </section>
+<section id="is-there-such-a-thing-as-a-systems-statistician" class="title-slide slide level1 center">
+<h1>Is there such a thing as a <em>systems statistician?</em></h1>
+
+</section>
+
 <section id="tidymodels-our-job-is-to-make-modeling-data-with-r-less-frustrating-better." class="title-slide slide level1 center">
 <h1>tidymodels: Our job is to make modeling data with R <span style="color:LightGray;"><strike> less frustrating</strike></span> better.</h1>
 
@@ -476,7 +481,7 @@ Max Kuhn
 </section>
 <section id="the-tidyverse" class="slide level2">
 <h2>The Tidyverse</h2>
-<p>The <a href="http://www.tidyverse.org/">tidyverse</a> is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures.</p>
+<p>All tidyverse packages share an underlying design philosophy, grammar, and data structures.</p>
 <p>The principles of the tidyverse:</p>
 <ol type="1">
 <li>Reuse existing data structures.</li>
@@ -499,11 +504,12 @@ Max Kuhn
 </section>
 <section id="tidymodels" class="slide level2">
 <h2>Tidymodels</h2>
-<p><code>tidymodels</code> is a collection of modeling packages that live in the tidyverse and are designed in the same way.</p>
+<p><code>tidymodels</code> is a collection of modeling packages that are designed in the same spirit as the tidyverse.</p>
 <p>My goals for tidymodels are:</p>
 <ol type="1">
-<li><p>Encourage empirical validation and good methodology.</p></li>
 <li><p>Smooth out diverse interfaces.</p></li>
+<li><p>Encourage empirical validation</p></li>
+<li><p>Quietly coerce good data usage.</p></li>
 <li><p>Build highly reusable infrastructure.</p></li>
 <li><p>Enable a wider variety of methodologies.</p></li>
 </ol>
@@ -524,6 +530,7 @@ Max Kuhn
 </ul></li>
 <li>additional imputation tools</li>
 </ul>
+<p>etcetera</p>
 </section></section>
 <section id="section" class="title-slide slide level1 center">
 <h1></h1>
@@ -556,24 +563,43 @@ Max Kuhn
 <li><p><a href="https://parsnip.tidymodels.org/"><code>parsnip</code></a> gives us a unified modeling interface.</p></li>
 <li><p><a href="https://tune.tidymodels.org/"><code>tune</code></a> has functions for grid search and sequential optimization of model parameters.</p></li>
 </ul>
-</section>
-<section id="loading-the-meta-package" class="slide level2">
-<h2>Loading the Meta-Package</h2>
+</section></section>
+<section>
+<section id="section-3" class="title-slide slide level1 center">
+<h1></h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidymodels)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">tidymodels_prefer</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; ── Attaching packages ────────────────────────────────────── tidymodels 1.1.1 ──</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#&gt; ✔ broom        1.0.5     ✔ recipes      1.0.7</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt; ✔ dials        1.2.0     ✔ rsample      1.2.0</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt; ✔ dplyr        1.1.3     ✔ tibble       3.2.1</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; ✔ ggplot2      3.4.3     ✔ tidyr        1.3.0</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; ✔ infer        1.0.4     ✔ tune         1.1.2</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt; ✔ modeldata    1.2.0     ✔ workflows    1.1.3</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt; ✔ parsnip      1.1.1     ✔ workflowsets 1.0.1</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#&gt; ✔ purrr        1.0.2     ✔ yardstick    1.2.0</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#&gt; ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co">#&gt; ✖ purrr::accumulate() masks foreach::accumulate()</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co">#&gt; ✖ purrr::discard()    masks scales::discard()</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#&gt; ✖ dplyr::filter()     masks stats::filter()</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt; ✖ dplyr::lag()        masks stats::lag()</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt; ✖ recipes::step()     masks stats::step()</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="co">#&gt; ✖ purrr::when()       masks foreach::when()</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="co">#&gt; • Learn how to get started at https://www.tidymodels.org/start/</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="fu">tidymodels_prefer</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="example-data" class="slide level2">
 <h2>Example Data</h2>
 <p>Let’s look at some data on delivery times for a restaurant.</p>
-<p>(n = 10,014)</p>
+<p>(n = 10,012)</p>
 <p>We want to predict the <code>time_to_delivery</code> based on some basic predictors.</p>
 <ul>
 <li><code>order_time</code> (double)</li>
 <li><code>order_day</code> (factor)</li>
 <li><code>distance</code> (double)</li>
-<li><code>product_01</code> … <code>product_27</code> (counts)</li>
+<li><code>item_01</code>, …, <code>item_27</code> (counts)</li>
 </ul>
 </section>
 <section id="outcome-distribution" class="slide level2">
@@ -591,7 +617,7 @@ Max Kuhn
 <p>We’ll split the data into training (60%), validation (20%), and testing (20%).</p>
 <p>Stratification helps ensure the three outcome distributions are about the same.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">set.seed</span>(<span class="dv">991</span>)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">set.seed</span>(<span class="dv">91</span>)</span>
 <span id="cb3-2"><a href="#cb3-2"></a>delivery_split <span class="ot">&lt;-</span> </span>
 <span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">initial_validation_split</span>(deliveries, </span>
 <span id="cb3-4"><a href="#cb3-4"></a>                           <span class="at">prop =</span> <span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.2</span>), </span>
@@ -599,7 +625,7 @@ Max Kuhn
 <span id="cb3-6"><a href="#cb3-6"></a></span>
 <span id="cb3-7"><a href="#cb3-7"></a>delivery_split</span>
 <span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; &lt;Training/Validation/Testing/Total&gt;</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; &lt;6007/2003/2004/10014&gt;</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; &lt;6004/2004/2004/10012&gt;</span></span>
 <span id="cb3-10"><a href="#cb3-10"></a></span>
 <span id="cb3-11"><a href="#cb3-11"></a>delivery_train <span class="ot">&lt;-</span> <span class="fu">training</span>(delivery_split)</span>
 <span id="cb3-12"><a href="#cb3-12"></a>delivery_val <span class="ot">&lt;-</span> <span class="fu">validation</span>(delivery_split)</span>
@@ -648,7 +674,7 @@ Max Kuhn
 <p>Each <code>step_</code> function takes <code>dplyr</code> selectors.</p>
 <p>The default naming is <em>much</em> better (e.g., <code>order_day_Fri</code>).</p>
 <p><br></p>
-<p>There are many steps for to encode categorical predictors. See <a href="https://www.tmwr.org/categorical"><em>Encoding Categorical Data</em></a> in <em>Tidy Models with R</em>.</p>
+<p>There are many steps that encode categorical predictors. See <a href="https://www.tmwr.org/categorical"><em>Encoding Categorical Data</em></a> in <em>Tidy Models with R</em>.</p>
 </section>
 <section id="what-are-our-features-2" class="slide level2">
 <h2>What are our <em>features</em>?</h2>
@@ -699,6 +725,10 @@ Max Kuhn
 </div>
 <p>We can optimize the degrees of freedom using model tuning.</p>
 <p>We’ll stick with 5 for now.</p>
+<p><br></p>
+<p>Remember that our nonlinear patterns depend on the day?</p>
+<p>The day indicators are named <code>order_day_{level}</code>.</p>
+<p>We should make interaction terms!</p>
 </section>
 <section id="what-are-our-features-6" class="slide level2">
 <h2>What are our <em>features</em>?</h2>
@@ -758,7 +788,7 @@ Max Kuhn
 </div><div class="column" style="width:40%;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-539a35d47e664c97a50115a146a7f1bd-4" class="quarto-figure quarto-figure-center" data-fig-align="center" width="100%">
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-4" class="quarto-figure quarto-figure-center" width="100%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig">
 <div>
 <img data-src="images/geordi-nope.png" id="fig-539a35d47e664c97a50115a146a7f1bd-4" class="quarto-figure-center" style="width:100.0%">
@@ -782,7 +812,7 @@ Max Kuhn
 </div><div class="column" style="width:40%;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-539a35d47e664c97a50115a146a7f1bd-5" class="quarto-figure quarto-figure-center" data-fig-align="center" width="100%">
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-5" class="quarto-figure quarto-figure-center" width="100%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig">
 <div>
 <img data-src="images/geordi-nope.png" id="fig-539a35d47e664c97a50115a146a7f1bd-5" class="quarto-figure-center" style="width:100.0%">
@@ -806,7 +836,7 @@ Max Kuhn
 </div><div class="column" style="width:40%;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-539a35d47e664c97a50115a146a7f1bd-6" class="quarto-figure quarto-figure-center" data-fig-align="center" width="100%">
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-6" class="quarto-figure quarto-figure-center" width="100%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig">
 <div>
 <img data-src="images/geordi-nope.png" id="fig-539a35d47e664c97a50115a146a7f1bd-6" class="quarto-figure-center" style="width:100.0%">
@@ -830,7 +860,7 @@ Max Kuhn
 </div><div class="column" style="width:40%;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-539a35d47e664c97a50115a146a7f1bd-7" class="quarto-figure quarto-figure-center" data-fig-align="center" width="100%">
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-7" class="quarto-figure quarto-figure-center" width="100%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig">
 <div>
 <img data-src="images/geordi-nope.png" id="fig-539a35d47e664c97a50115a146a7f1bd-7" class="quarto-figure-center" style="width:100.0%">
@@ -854,7 +884,7 @@ Max Kuhn
 </div><div class="column" style="width:40%;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-539a35d47e664c97a50115a146a7f1bd-8" class="quarto-figure quarto-figure-center" data-fig-align="center" width="100%">
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-8" class="quarto-figure quarto-figure-center" width="100%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig">
 <div>
 <img data-src="images/geordi-nope.png" id="fig-539a35d47e664c97a50115a146a7f1bd-8" class="quarto-figure-center" style="width:100.0%">
@@ -878,7 +908,7 @@ Max Kuhn
 </div><div class="column" style="width:40%;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-539a35d47e664c97a50115a146a7f1bd-9" class="quarto-figure quarto-figure-center" data-fig-align="center" width="100%">
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-9" class="quarto-figure quarto-figure-center" width="100%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig">
 <div>
 <img data-src="images/geordi-yes.png" id="fig-539a35d47e664c97a50115a146a7f1bd-9" class="quarto-figure-center" style="width:100.0%">
@@ -903,7 +933,7 @@ Max Kuhn
 </div><div class="column" style="width:40%;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-539a35d47e664c97a50115a146a7f1bd-10" class="quarto-figure quarto-figure-center" data-fig-align="center" width="100%">
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-10" class="quarto-figure quarto-figure-center" width="100%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig">
 <div>
 <img data-src="images/geordi-yes.png" id="fig-539a35d47e664c97a50115a146a7f1bd-10" class="quarto-figure-center" style="width:100.0%">
@@ -933,66 +963,100 @@ Max Kuhn
 <span id="cb23-5"><a href="#cb23-5"></a><span class="co">#&gt; # A tibble: 5 × 1</span></span>
 <span id="cb23-6"><a href="#cb23-6"></a><span class="co">#&gt;   .pred</span></span>
 <span id="cb23-7"><a href="#cb23-7"></a><span class="co">#&gt;   &lt;dbl&gt;</span></span>
-<span id="cb23-8"><a href="#cb23-8"></a><span class="co">#&gt; 1  23.3</span></span>
-<span id="cb23-9"><a href="#cb23-9"></a><span class="co">#&gt; 2  25.5</span></span>
-<span id="cb23-10"><a href="#cb23-10"></a><span class="co">#&gt; 3  27.2</span></span>
-<span id="cb23-11"><a href="#cb23-11"></a><span class="co">#&gt; 4  20.1</span></span>
-<span id="cb23-12"><a href="#cb23-12"></a><span class="co">#&gt; 5  27.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-8"><a href="#cb23-8"></a><span class="co">#&gt; 1  23.4</span></span>
+<span id="cb23-9"><a href="#cb23-9"></a><span class="co">#&gt; 2  15.3</span></span>
+<span id="cb23-10"><a href="#cb23-10"></a><span class="co">#&gt; 3  31.5</span></span>
+<span id="cb23-11"><a href="#cb23-11"></a><span class="co">#&gt; 4  20.8</span></span>
+<span id="cb23-12"><a href="#cb23-12"></a><span class="co">#&gt; 5  28.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="a-better-interface" class="slide level2">
 <h2>A Better Interface</h2>
 <p><code>fit_resamples()</code> uses the out-of-sample data to estimate performance:</p>
-<div class="cell" data-hash="index_cache/revealjs/fit-resamples_75b3289dc35c4e3786c53eb6a6744be1">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>glmnet_wflow <span class="sc">%&gt;%</span> </span>
-<span id="cb24-2"><a href="#cb24-2"></a>  <span class="co"># We can use our validation set!</span></span>
-<span id="cb24-3"><a href="#cb24-3"></a>  <span class="fu">fit_resamples</span>(<span class="at">resamples =</span> delivery_rs) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-4"><a href="#cb24-4"></a>  <span class="fu">collect_metrics</span>()</span>
-<span id="cb24-5"><a href="#cb24-5"></a><span class="co">#&gt; # A tibble: 2 × 6</span></span>
-<span id="cb24-6"><a href="#cb24-6"></a><span class="co">#&gt;   .metric .estimator  mean     n std_err .config             </span></span>
-<span id="cb24-7"><a href="#cb24-7"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               </span></span>
-<span id="cb24-8"><a href="#cb24-8"></a><span class="co">#&gt; 1 rmse    standard   2.09      1      NA Preprocessor1_Model1</span></span>
-<span id="cb24-9"><a href="#cb24-9"></a><span class="co">#&gt; 2 rsq     standard   0.829     1      NA Preprocessor1_Model1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="index_cache/revealjs/fit-resamples_797ac49ed7f594f71c3716d4bf50dc2f">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>ctrl <span class="ot">&lt;-</span> <span class="fu">control_resamples</span>(<span class="at">save_pred =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-2"><a href="#cb24-2"></a>glmnet_res <span class="ot">&lt;-</span> glmnet_wflow <span class="sc">%&gt;%</span> </span>
+<span id="cb24-3"><a href="#cb24-3"></a>  <span class="co"># We can use our validation set!</span></span>
+<span id="cb24-4"><a href="#cb24-4"></a>  <span class="fu">fit_resamples</span>(<span class="at">resamples =</span> delivery_rs, <span class="at">control =</span> ctrl) </span>
+<span id="cb24-5"><a href="#cb24-5"></a></span>
+<span id="cb24-6"><a href="#cb24-6"></a><span class="fu">collect_metrics</span>(glmnet_res)</span>
+<span id="cb24-7"><a href="#cb24-7"></a><span class="co">#&gt; # A tibble: 2 × 6</span></span>
+<span id="cb24-8"><a href="#cb24-8"></a><span class="co">#&gt;   .metric .estimator  mean     n std_err .config             </span></span>
+<span id="cb24-9"><a href="#cb24-9"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               </span></span>
+<span id="cb24-10"><a href="#cb24-10"></a><span class="co">#&gt; 1 rmse    standard   2.36      1      NA Preprocessor1_Model1</span></span>
+<span id="cb24-11"><a href="#cb24-11"></a><span class="co">#&gt; 2 rsq     standard   0.885     1      NA Preprocessor1_Model1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We probably don’t have a good idea of what the <code>penalty</code> and <code>mixture</code> values should be.</p>
-<p>As seen before, we can <em>mark them for tuning</em>.</p>
+</section>
+<section id="plot-the-data" class="slide level2">
+<h2>Plot the Data!</h2>
+<p>The only way to be comfortable with your data is to never look at them.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">library</span>(probably)</span>
+<span id="cb25-2"><a href="#cb25-2"></a>glmnet_res <span class="sc">%&gt;%</span> <span class="fu">cal_plot_regression</span>(<span class="at">alpha =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="figures/glmnet-cal-1.svg" id="fig-539a35d47e664c97a50115a146a7f1bd-11" style="width:100.0%" class="r-stretch quarto-figure-center"></section>
+<section id="but-what-about-those-parameters" class="slide level2">
+<h2>But What About Those parameters?</h2>
+<p>We probably don’t have a good idea of what <code>deg_free</code>, <code>penalty</code>, and <code>mixture</code> should be.</p>
+<p>As seen before, we could <em>mark them for tuning</em> and optimize them.</p>
+<p>Instead, we’ll try a different model and show how to tune the model.</p>
 </section>
 <section id="lets-try-cubist." class="slide level2">
 <h2>Let’s Try Cubist.</h2>
 <p>It is a <em>rule-based ensemble</em>. Rules are paths through a tree. Here are 4 rules:</p>
 
-<img data-src="figures/tree-fit-1.svg" id="fig-539a35d47e664c97a50115a146a7f1bd-11" style="width:85.0%" class="r-stretch quarto-figure-center"><p>It can create many rule sets to form an ensemble.</p>
+<img data-src="figures/tree-fit-1.svg" id="fig-539a35d47e664c97a50115a146a7f1bd-12" style="width:85.0%" class="r-stretch quarto-figure-center"><p>It can create many rule sets to form an ensemble.</p>
+</section>
+<section id="example-rules" class="slide level2">
+<h2>Example Rules</h2>
+<hr>
+<pre><code>if
+    order_time &lt;= 13.715
+    order_day in {Fri, Sat}
+    distance &lt;= 5.08
+then
+    outcome = -24.3334 + 2.97 order_time + 1.13 distance + 0.6 item_10
+              + 0.4 item_09 + 0.6 item_21 + 0.5 item_01 + 0.3 item_24
+              + 0.3 item_08 + 0.3 item_03 + 0.3 item_13 + 0.2 item_02
+              + 0.2 item_07</code></pre>
+<hr>
+<pre><code>if
+    order_time &gt; 20.038
+    order_day = Sat
+then
+    outcome = 47.04085 - 1.45 order_time + 3.38 distance + 1.6 item_08</code></pre>
 </section>
 <section id="model-tuning" class="slide level2">
 <h2>Model tuning</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">library</span>(rules)</span>
-<span id="cb25-2"><a href="#cb25-2"></a>cubist_mod <span class="ot">&lt;-</span> <span class="fu">cubist_rules</span>(<span class="at">committees =</span> <span class="fu">tune</span>(), <span class="at">neighbors =</span> <span class="fu">tune</span>())</span>
-<span id="cb25-3"><a href="#cb25-3"></a>cubist_wflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>(time_to_delivery <span class="sc">~</span> ., cubist_mod) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">library</span>(rules)</span>
+<span id="cb28-2"><a href="#cb28-2"></a>cubist_mod <span class="ot">&lt;-</span> <span class="fu">cubist_rules</span>(<span class="at">committees =</span> <span class="fu">tune</span>())</span>
+<span id="cb28-3"><a href="#cb28-3"></a>cubist_wflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>(time_to_delivery <span class="sc">~</span> ., cubist_mod) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <p>We’ll evaluate 25 model candidates using a <em>space-filling design</em> and evaluate them on the validation set:</p>
-<div class="cell" data-hash="index_cache/revealjs/glmnet-tune-res_9d036ba1f149ef2a4f07d85ba8e65e94">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>cubist_res <span class="ot">&lt;-</span> </span>
-<span id="cb26-2"><a href="#cb26-2"></a>  cubist_wflow <span class="sc">%&gt;%</span> </span>
-<span id="cb26-3"><a href="#cb26-3"></a>  <span class="fu">tune_grid</span>(<span class="at">resamples =</span> delivery_rs, <span class="at">grid =</span> <span class="dv">25</span>)</span>
-<span id="cb26-4"><a href="#cb26-4"></a></span>
-<span id="cb26-5"><a href="#cb26-5"></a><span class="fu">show_best</span>(cubist_res, <span class="at">metric =</span> <span class="st">"rmse"</span>, <span class="at">n =</span> <span class="dv">3</span>)</span>
-<span id="cb26-6"><a href="#cb26-6"></a><span class="co">#&gt; # A tibble: 3 × 8</span></span>
-<span id="cb26-7"><a href="#cb26-7"></a><span class="co">#&gt;   committees neighbors .metric .estimator  mean     n std_err .config           </span></span>
-<span id="cb26-8"><a href="#cb26-8"></a><span class="co">#&gt;        &lt;int&gt;     &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;             </span></span>
-<span id="cb26-9"><a href="#cb26-9"></a><span class="co">#&gt; 1         69         0 rmse    standard    1.88     1      NA Preprocessor1_Mod…</span></span>
-<span id="cb26-10"><a href="#cb26-10"></a><span class="co">#&gt; 2         79         9 rmse    standard    1.96     1      NA Preprocessor1_Mod…</span></span>
-<span id="cb26-11"><a href="#cb26-11"></a><span class="co">#&gt; 3         26         9 rmse    standard    1.96     1      NA Preprocessor1_Mod…</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="index_cache/revealjs/cubist-tune-res_b98e46d54c137630b2cf419a0f1f4ede">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>cubist_res <span class="ot">&lt;-</span> </span>
+<span id="cb29-2"><a href="#cb29-2"></a>  cubist_wflow <span class="sc">%&gt;%</span> </span>
+<span id="cb29-3"><a href="#cb29-3"></a>  <span class="fu">tune_grid</span>(<span class="at">resamples =</span> delivery_rs, <span class="at">grid =</span> <span class="dv">10</span>)</span>
+<span id="cb29-4"><a href="#cb29-4"></a></span>
+<span id="cb29-5"><a href="#cb29-5"></a><span class="fu">show_best</span>(cubist_res, <span class="at">metric =</span> <span class="st">"rmse"</span>, <span class="at">n =</span> <span class="dv">3</span>)</span>
+<span id="cb29-6"><a href="#cb29-6"></a><span class="co">#&gt; # A tibble: 3 × 7</span></span>
+<span id="cb29-7"><a href="#cb29-7"></a><span class="co">#&gt;   committees .metric .estimator  mean     n std_err .config              </span></span>
+<span id="cb29-8"><a href="#cb29-8"></a><span class="co">#&gt;        &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                </span></span>
+<span id="cb29-9"><a href="#cb29-9"></a><span class="co">#&gt; 1         96 rmse    standard    1.98     1      NA Preprocessor1_Model05</span></span>
+<span id="cb29-10"><a href="#cb29-10"></a><span class="co">#&gt; 2         44 rmse    standard    1.98     1      NA Preprocessor1_Model02</span></span>
+<span id="cb29-11"><a href="#cb29-11"></a><span class="co">#&gt; 3         28 rmse    standard    1.98     1      NA Preprocessor1_Model08</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="model-tuning-1" class="slide level2">
 <h2>Model tuning</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">autoplot</span>(cubist_res, <span class="at">metric =</span> <span class="st">"rmse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">autoplot</span>(cubist_res, <span class="at">metric =</span> <span class="st">"rmse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="figures/glmnet-res-1.svg" id="fig-539a35d47e664c97a50115a146a7f1bd-12" style="width:80.0%" class="r-stretch quarto-figure-center"></section>
+<img data-src="figures/cubist-res-1.svg" id="fig-539a35d47e664c97a50115a146a7f1bd-13" style="width:80.0%" class="r-stretch quarto-figure-center"></section>
 <section id="next-steps" class="slide level2">
 <h2>Next Steps</h2>
 <p>From here, we would</p>
@@ -1031,9 +1095,11 @@ Max Kuhn
 </section>
 <section id="thanks" class="slide level2">
 <h2>Thanks</h2>
-<p>Thanks for the invitation to speak today!</p>
+<p>Thanks for the invitation to speak today and sharing your Mate!</p>
+<p><br></p>
 <p>The tidymodels team: <strong>Hannah Frick, Emil Hvitfeldt, and Simon Couch</strong>.</p>
-<p>Special thanks to the other folks who contributed so much to tidymodels: Davis Vaughan, Edgar Ruiz, Alison Hill, Desirée De Leon, our previous interns, and the tidyverse team.</p>
+<p><br></p>
+<p>Special thanks to the other folks who contributed so much to tidymodels: Davis Vaughan, Julia Silge, Edgar Ruiz, Alison Hill, Desirée De Leon, our previous interns, and the tidyverse team.</p>
 <div class="footer footer-default">
 <p><a href="https://topepo.github.io/2023-latinR" class="uri">https://topepo.github.io/2023-latinR</a></p>
 </div>

@@ -63,7 +63,7 @@ and so on.
 
 ## Model Interfaces
 
-Which of these packages has both a formula and non-formula interface to the model? 
+Which of these packages has both a formula and non-formula (x/y) interface to the model? 
 
 - `glmnet`
 - `ranger`
@@ -73,7 +73,7 @@ Which of these packages has both a formula and non-formula interface to the mode
 
 ## Model Interfaces
 
-Which of these packages has both a formula and non-formula interface to the model? 
+Which of these packages has both a formula and non-formula (x/y) interface to the model? 
 
 ::: {.incremental}
 - `glmnet` (matrix only)
@@ -82,6 +82,9 @@ Which of these packages has both a formula and non-formula interface to the mode
 - `survival` (formula only)
 - `xgboost` (special sparse matrix only, classes are _zero_-based integers)
 :::
+
+# Is there such a thing as a _systems statistician?_
+
 
 # tidymodels: Our job is to make modeling data with R <span style="color:LightGray;"><strike> less frustrating</strike></span> better.
 
@@ -93,8 +96,7 @@ Which of these packages has both a formula and non-formula interface to the mode
 
 ## The Tidyverse
 
-
-The [tidyverse](http://www.tidyverse.org/) is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures. 
+All tidyverse packages share an underlying design philosophy, grammar, and data structures. 
 
 
 The principles of the tidyverse: 
@@ -121,13 +123,15 @@ Based on these ideas, we can create modeling packages that have predictable resu
 
 ## Tidymodels 
 
-`tidymodels` is a collection of modeling packages that live in the tidyverse and are designed in the same way. 
+`tidymodels` is a collection of modeling packages that are designed in the same spirit as the tidyverse.  
 
 My goals for tidymodels are:
 
-1. Encourage empirical validation and good methodology.
-
 1. Smooth out diverse interfaces.
+
+1. Encourage empirical validation 
+
+1. Quietly coerce good data usage.
 
 1. Build highly reusable infrastructure.
 
@@ -146,6 +150,7 @@ My goals for tidymodels are:
   
 - additional imputation tools
 
+etcetera
   
 # 
 
@@ -183,12 +188,14 @@ _Tidy Modeling with R_
 * [`tune`](https://tune.tidymodels.org/) has functions for grid search and sequential optimization of model parameters. 
 
 
-## Loading the Meta-Package
+#
 
 ```{r}
 #| label: load-tm
+#| message: true
 
 library(tidymodels)
+
 tidymodels_prefer()
 ```
 ```{r startup}
@@ -225,6 +232,7 @@ thm <- theme_bw() +
 theme_set(thm)
 
 load("deliveries.RData")
+deliveries$inv_wts <- NULL
 ```
 
 ## Example Data
@@ -238,7 +246,7 @@ We want to predict the `time_to_delivery` based on some basic predictors.
 - `order_time` (double)
 - `order_day` (factor)
 - `distance` (double)
-- `product_01` ... `product_27` (counts)
+- `item_01`, ..., `item_27` (counts)
 
 
 
@@ -260,7 +268,7 @@ We'll split the data into training (60%), validation (20%), and testing (20%).
 Stratification helps ensure the three outcome distributions are about the same. 
 
 ```{r}
-set.seed(991)
+set.seed(91)
 delivery_split <- 
   initial_validation_split(deliveries, 
                            prop = c(0.6, 0.2), 
@@ -332,7 +340,7 @@ The default naming is _much_ better (e.g., `order_day_Fri`).
 
 <br>
 
-There are many steps for to encode categorical predictors. See [_Encoding Categorical Data_](https://www.tmwr.org/categorical) in _Tidy Models with R_. 
+There are many steps that encode categorical predictors. See [_Encoding Categorical Data_](https://www.tmwr.org/categorical) in _Tidy Models with R_. 
 
 
 ## What are our _features_? 
@@ -400,6 +408,14 @@ delivery_rec <-
 We can optimize the degrees of freedom using model tuning. 
 
 We'll stick with 5 for now. 
+
+<br> 
+
+Remember that our nonlinear patterns depend on the day? 
+
+The day indicators are named `order_day_{level}`. 
+
+We should make interaction terms!
 
 
 ## What are our _features_? 
@@ -677,16 +693,39 @@ predict(glmnet_fit, delivery_val %>% slice(1:5))
 #| label: fit-resamples
 #| warning: false
 #| cache: true
-glmnet_wflow %>% 
+ctrl <- control_resamples(save_pred = TRUE)
+glmnet_res <- glmnet_wflow %>% 
   # We can use our validation set!
-  fit_resamples(resamples = delivery_rs) %>% 
-  collect_metrics()
+  fit_resamples(resamples = delivery_rs, control = ctrl) 
+
+collect_metrics(glmnet_res)
+```
+
+## Plot the Data!
+
+The only way to be comfortable with your data is to never look at them. 
+
+```{r}
+#| label: glmnet-cal
+#| fig-width: 4
+#| fig-height: 4
+#| out-width: "100%"
+
+library(probably)
+glmnet_res %>% cal_plot_regression(alpha = 1/5)
 ```
 
 
-We probably don't have a good idea of what the `penalty` and `mixture` values should be. 
+## But What About Those parameters? 
 
-As seen before, we can _mark them for tuning_. 
+
+We probably don't have a good idea of what `deg_free`, `penalty`, and `mixture` should be. 
+
+As seen before, we could _mark them for tuning_ and optimize them. 
+
+Instead, we'll try a different model and show how to tune the model. 
+
+
 
 
 ## Let's Try Cubist.
@@ -707,13 +746,38 @@ plot(as.party(tree_fit))
 
 It can create many rule sets to form an ensemble. 
 
+## Example Rules
+
+<hr>
+
+```
+if
+	order_time <= 13.715
+	order_day in {Fri, Sat}
+	distance <= 5.08
+then
+	outcome = -24.3334 + 2.97 order_time + 1.13 distance + 0.6 item_10
+	          + 0.4 item_09 + 0.6 item_21 + 0.5 item_01 + 0.3 item_24
+	          + 0.3 item_08 + 0.3 item_03 + 0.3 item_13 + 0.2 item_02
+	          + 0.2 item_07
+```
+
+<hr>
+
+```
+if
+	order_time > 20.038
+	order_day = Sat
+then
+	outcome = 47.04085 - 1.45 order_time + 3.38 distance + 1.6 item_08
+```
 
 ## Model tuning 
 
 ```{r}
 #| label: cubist-spec
 library(rules)
-cubist_mod <- cubist_rules(committees = tune(), neighbors = tune())
+cubist_mod <- cubist_rules(committees = tune())
 cubist_wflow <- workflow(time_to_delivery ~ ., cubist_mod) 
 ```
 
@@ -722,11 +786,11 @@ cubist_wflow <- workflow(time_to_delivery ~ ., cubist_mod)
 We'll evaluate 25 model candidates using a _space-filling design_ and evaluate them on the validation set: 
 
 ```{r}
-#| label: glmnet-tune-res
+#| label: cubist-tune-res
 #| cache: true
 cubist_res <- 
   cubist_wflow %>% 
-  tune_grid(resamples = delivery_rs, grid = 25)
+  tune_grid(resamples = delivery_rs, grid = 10)
 
 show_best(cubist_res, metric = "rmse", n = 3)
 ```
@@ -734,7 +798,7 @@ show_best(cubist_res, metric = "rmse", n = 3)
 ## Model tuning 
 
 ```{r}
-#| label: glmnet-res
+#| label: cubist-res
 #| fig-width: 5
 #| fig-height: 3
 #| out-width: "80%"
@@ -784,8 +848,12 @@ In-process:
 
 ## Thanks
 
-Thanks for the invitation to speak today!
+Thanks for the invitation to speak today and sharing your Mate!
+
+<br> 
 
 The tidymodels team: **Hannah Frick, Emil Hvitfeldt, and Simon Couch**.
 
-Special thanks to the other folks who contributed so much to tidymodels: Davis Vaughan, Edgar Ruiz, Alison Hill, Desirée De Leon, our previous interns, and the tidyverse team.
+<br> 
+
+Special thanks to the other folks who contributed so much to tidymodels: Davis Vaughan, Julia Silge, Edgar Ruiz, Alison Hill, Desirée De Leon, our previous interns, and the tidyverse team.
