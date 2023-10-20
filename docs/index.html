@@ -403,6 +403,13 @@ Max Kuhn
 </div>
 
 </section>
+<section>
+<section id="section" class="title-slide slide level1 center">
+<h1></h1>
+<div class="r-fit-text">
+<p><a href="https://topepo.github.io/2023-latinR"><code>topepo.github.io/2023-latinR</code></a></p>
+</div>
+</section>
 <section id="modeling-in-r" class="slide level2">
 <h2>Modeling in R</h2>
 <ul>
@@ -458,7 +465,7 @@ Max Kuhn
 <li class="fragment"><code>xgboost</code> (special sparse matrix only, classes are <em>zero</em>-based integers)</li>
 </ul>
 </div>
-</section>
+</section></section>
 <section id="is-there-such-a-thing-as-a-systems-statistician" class="title-slide slide level1 center">
 <h1>Is there such a thing as a <em>systems statistician?</em></h1>
 
@@ -532,14 +539,14 @@ Max Kuhn
 </ul>
 <p>etcetera</p>
 </section></section>
-<section id="section" class="title-slide slide level1 center">
+<section id="section-1" class="title-slide slide level1 center">
 <h1></h1>
 <div class="r-fit-text">
 <p><a href="https://www.tidymodels.org/"><code>tidymodels.org</code></a></p>
 </div>
 </section>
 
-<section id="section-1" class="title-slide slide level1 center">
+<section id="section-2" class="title-slide slide level1 center">
 <h1></h1>
 <div class="r-fit-text">
 <p><em>Tidy Modeling with R</em></p>
@@ -547,25 +554,15 @@ Max Kuhn
 </div>
 </section>
 
-<section>
-<section id="section-2" class="title-slide slide level1 center">
+<section id="section-3" class="title-slide slide level1 center">
 <h1></h1>
 <div class="r-fit-text">
 <p><a href="https://workshops.tidymodels.org/"><code>workshops.tidymodels.org</code></a></p>
 </div>
 </section>
-<section id="selected-tidymodels-packages" class="slide level2">
-<h2>Selected tidymodels Packages</h2>
-<ul>
-<li><p><a href="https://broom.tidymodels.org/"><code>broom</code></a> takes the messy output of built-in functions in R, such as <code>lm</code>, <code>nls</code>, or <code>t.test</code>, and turns them into tidy data frames.</p></li>
-<li><p><a href="https://recipes.tidymodels.org/"><code>recipes</code></a> is a general data preprocessor with a modern interface. It can create model matrices that incorporate feature engineering, imputation, and other tools.</p></li>
-<li><p><a href="https://rsample.tidymodels.org/"><code>rsample</code></a> has infrastructure for <em>resampling</em> data so that models can be assessed and empirically validated.</p></li>
-<li><p><a href="https://parsnip.tidymodels.org/"><code>parsnip</code></a> gives us a unified modeling interface.</p></li>
-<li><p><a href="https://tune.tidymodels.org/"><code>tune</code></a> has functions for grid search and sequential optimization of model parameters.</p></li>
-</ul>
-</section></section>
+
 <section>
-<section id="section-3" class="title-slide slide level1 center">
+<section id="section-4" class="title-slide slide level1 center">
 <h1></h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidymodels)</span>
@@ -585,7 +582,7 @@ Max Kuhn
 <span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt; ✖ dplyr::lag()        masks stats::lag()</span></span>
 <span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt; ✖ recipes::step()     masks stats::step()</span></span>
 <span id="cb1-17"><a href="#cb1-17"></a><span class="co">#&gt; ✖ purrr::when()       masks foreach::when()</span></span>
-<span id="cb1-18"><a href="#cb1-18"></a><span class="co">#&gt; • Learn how to get started at https://www.tidymodels.org/start/</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="co">#&gt; • Use tidymodels_prefer() to resolve common conflicts.</span></span>
 <span id="cb1-19"><a href="#cb1-19"></a></span>
 <span id="cb1-20"><a href="#cb1-20"></a><span class="fu">tidymodels_prefer</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>

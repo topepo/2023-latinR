@@ -26,6 +26,16 @@ library(doMC)
 registerDoMC(cores = parallel::detectCores(logical = TRUE))
 ```
 
+# 
+
+
+::: r-fit-text
+
+[`topepo.github.io/2023-latinR`](https://topepo.github.io/2023-latinR)
+:::
+
+
+
 ## Modeling in R
 
 * R has always had a rich set of modeling tools that it inherited from S. For example, the formula interface has made it simple to specify potentially complex model structures.   
@@ -171,21 +181,6 @@ _Tidy Modeling with R_
 ::: r-fit-text
 [`workshops.tidymodels.org`](https://workshops.tidymodels.org/)
 :::
-
-
-
-## Selected tidymodels Packages 
-
-
-* [`broom`](https://broom.tidymodels.org/) takes the messy output of built-in functions in R, such as `lm`, `nls`, or `t.test`, and turns them into tidy data frames.
-
-* [`recipes`](https://recipes.tidymodels.org/) is a general data preprocessor with a modern interface. It can create model matrices that incorporate feature engineering, imputation, and other tools.
-
-* [`rsample`](https://rsample.tidymodels.org/) has infrastructure for _resampling_ data so that models can be assessed and empirically validated. 
-
-* [`parsnip`](https://parsnip.tidymodels.org/) gives us a unified modeling interface.
-
-* [`tune`](https://tune.tidymodels.org/) has functions for grid search and sequential optimization of model parameters. 
 
 
 #
